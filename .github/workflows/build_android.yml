@@ -1,0 +1,60 @@
+name: Build Android
+
+on:
+  push:
+    paths-ignore:
+      - 'static/**'
+      - '**.md'
+      - '.gitignore'
+      - '.github/ISSUE_TEMPLATE/**'
+      - 'fastlane/**'
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    name: Build APK
+    env:
+      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Accept Android SDK licenses
+        run: yes | flutter doctor --android-licenses
+
+      - name: Inject DanDan API Credentials
+        run: |
+            sed -i "s/kvpx7qkqjh/${{ secrets.DANDANAPI_APPID }}/g" lib/utils/mortis.dart
+            sed -i "s/rABUaBLqdz7aCSi3fe88ZDj2gwga9Vax/${{ secrets.DANDANAPI_KEY }}/g" lib/utils/mortis.dart
+
+      - name: Build APK
+        run: |
+          flutter build apk --release --target-platform android-arm64 --split-per-abi
+
+      - name: Sign APK
+        id: sign_app
+        uses: filippoLeporati93/android-release-signer@v1
+        with:
+            releaseDirectory: build/app/outputs/flutter-apk/
+            signingKeyBase64: ${{ secrets.SIGNING_KEY_BASE64 }}
+            alias: ${{ secrets.KEY_ALIAS }}
+            keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+        env:
+            BUILD_TOOLS_VERSION: "36.0.0"
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: |
+            ${{steps.sign_app.outputs.signedReleaseFile}}

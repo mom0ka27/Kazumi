@@ -37,7 +37,7 @@
               java-version: '17'
               distribution: 'temurin'          
           - name: Set up Flutter
-            uses: subosito/flutter-action@v2.16.0
+            uses: subosito/flutter-action@v2
             with:
               channel: stable
               flutter-version-file: pubspec.yaml
@@ -111,7 +111,7 @@
             uses: signpath/github-action-submit-signing-request@v1.1
             with:
               api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
-              organization-id: 'fa047255-4772-4be1-b14f-5cfa62635877'
+              organization-id: '${{ secrets.SIGNPATH_ORG_ID }}'
               project-slug: 'Kazumi'
               signing-policy-slug: 'release-signing'
               artifact-configuration-slug: 'Packet'
@@ -147,7 +147,7 @@
             uses: signpath/github-action-submit-signing-request@v1.1
             with:
               api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
-              organization-id: 'fa047255-4772-4be1-b14f-5cfa62635877'
+              organization-id: '${{ secrets.SIGNPATH_ORG_ID }}'
               project-slug: 'Kazumi'
               signing-policy-slug: 'release-signing'
               artifact-configuration-slug: 'MSIX'
