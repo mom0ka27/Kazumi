@@ -33,7 +33,7 @@ jobs:
         run: yes | flutter doctor --android-licenses
 
       - name: Decode keystore
-        run: echo "${{ secrets.SIGNING_KEY_BASE64 }}" | base64 -d > android/app/release-key.jks
+        run: echo "${{ secrets.SIGNING_KEY_BASE64 }}" | base64 -d > android/app/android.jks
 
       - name: Inject DanDan API Credentials
         run: |
