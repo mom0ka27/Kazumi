@@ -152,12 +152,12 @@ class _CollectPageState extends State<CollectPage>
       list.sort((a, b) => b.time.millisecondsSinceEpoch
           .compareTo(a.time.millisecondsSinceEpoch));
     }
-    int crossCount = 3;
+    int crossCount = 2;
     if (MediaQuery.sizeOf(context).width > LayoutBreakpoint.compact['width']!) {
-      crossCount = 5;
+      crossCount = 4;
     }
     if (MediaQuery.sizeOf(context).width > LayoutBreakpoint.medium['width']!) {
-      crossCount = 6;
+      crossCount = 5;
     }
     for (List<CollectedBangumi> collectedBangumiRenderItem
         in collectedBangumiRenderItemList) {
@@ -165,8 +165,8 @@ class _CollectPageState extends State<CollectPage>
         CustomScrollView(
           slivers: [
             SliverPadding(
-              padding: const EdgeInsets.fromLTRB(
-                  StyleString.cardSpace, StyleString.cardSpace, StyleString.cardSpace, 0),
+              padding: const EdgeInsets.fromLTRB(StyleString.cardSpace,
+                  StyleString.cardSpace, StyleString.cardSpace, 0),
               sliver: SliverGrid(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   mainAxisSpacing: StyleString.cardSpace - 2,

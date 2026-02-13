@@ -4,6 +4,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:kazumi/bean/dialog/dialog_helper.dart';
 import 'package:kazumi/bean/widget/error_widget.dart';
 import 'package:kazumi/bean/widget/custom_dropdown_menu.dart';
+import 'package:kazumi/modules/bangumi/bangumi_item.dart';
 import 'package:kazumi/pages/popular/popular_controller.dart';
 import 'package:kazumi/bean/card/bangumi_card.dart';
 import 'package:kazumi/utils/constants.dart';
@@ -63,7 +64,8 @@ class _PopularPageState extends State<PopularPage>
     if (scrollController.position.pixels >=
             scrollController.position.maxScrollExtent - 200 &&
         !popularController.isLoadingMore) {
-      KazumiLogger().i('PopularPageController: Fetching next recommendation batch');
+      KazumiLogger()
+          .i('PopularPageController: Fetching next recommendation batch');
       if (popularController.currentTag != '') {
         popularController.queryBangumiByTag();
       } else {
@@ -163,13 +165,13 @@ class _PopularPageState extends State<PopularPage>
     );
   }
 
-  Widget contentGrid(bangumiList) {
-    int crossCount = 3;
+  Widget contentGrid(List<BangumiItem> bangumiList) {
+    int crossCount = 2;
     if (MediaQuery.sizeOf(context).width > LayoutBreakpoint.compact['width']!) {
-      crossCount = 5;
+      crossCount = 4;
     }
     if (MediaQuery.sizeOf(context).width > LayoutBreakpoint.medium['width']!) {
-      crossCount = 6;
+      crossCount = 5;
     }
     return SliverPadding(
       padding: const EdgeInsets.all(8),
@@ -187,11 +189,11 @@ class _PopularPageState extends State<PopularPage>
         ),
         delegate: SliverChildBuilderDelegate(
           (BuildContext context, int index) {
-            return bangumiList!.isNotEmpty
+            return bangumiList.isNotEmpty
                 ? BangumiCardV(bangumiItem: bangumiList[index])
                 : null;
           },
-          childCount: bangumiList!.isNotEmpty ? bangumiList!.length : 10,
+          childCount: bangumiList.isNotEmpty ? bangumiList.length : 10,
         ),
       ),
     );

@@ -20,51 +20,43 @@ class BangumiCardV extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      clipBehavior: Clip.antiAlias,
-      margin: EdgeInsets.zero,
-      child: GestureDetector(
-        child: InkWell(
-          onTap: () {
-            if (!canTap) {
-              KazumiDialog.showToast(
-                message: '编辑模式',
-              );
-              return;
-            }
-            Modular.to.pushNamed('/info/', arguments: bangumiItem);
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              AspectRatio(
-                aspectRatio: 0.65,
-                child: LayoutBuilder(builder: (context, boxConstraints) {
-                  final double maxWidth = boxConstraints.maxWidth;
-                  final double maxHeight = boxConstraints.maxHeight;
-                  return enableHero
-                      ? Hero(
-                          transitionOnUserGestures: true,
-                          tag: bangumiItem.id,
-                          child: NetworkImgLayer(
-                            src: bangumiItem.images['large'] ?? '',
-                            width: maxWidth,
-                            height: maxHeight,
-                          ),
-                        )
-                      : NetworkImgLayer(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        GestureDetector(
+            onTap: () {
+              if (!canTap) {
+                KazumiDialog.showToast(
+                  message: '编辑模式',
+                );
+                return;
+              }
+              Modular.to.pushNamed('/info/', arguments: bangumiItem);
+            },
+            child: AspectRatio(
+              aspectRatio: 0.65,
+              child: LayoutBuilder(builder: (context, boxConstraints) {
+                final double maxWidth = boxConstraints.maxWidth;
+                final double maxHeight = boxConstraints.maxHeight;
+                return enableHero
+                    ? Hero(
+                        transitionOnUserGestures: true,
+                        tag: bangumiItem.id,
+                        child: NetworkImgLayer(
                           src: bangumiItem.images['large'] ?? '',
                           width: maxWidth,
                           height: maxHeight,
-                        );
-                }),
-              ),
-              BangumiContent(bangumiItem: bangumiItem)
-            ],
-          ),
-        ),
-      ),
+                        ),
+                      )
+                    : NetworkImgLayer(
+                        src: bangumiItem.images['large'] ?? '',
+                        width: maxWidth,
+                        height: maxHeight,
+                      );
+              }),
+            )),
+        BangumiContent(bangumiItem: bangumiItem)
+      ],
     );
   }
 }
@@ -78,8 +70,12 @@ class BangumiContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final ts = MediaQuery.textScalerOf(context);
 
-    final int maxTextLines = Utils.isDesktop() ? 3 
-      : (Utils.isTablet() && MediaQuery.of(context).orientation == Orientation.landscape) ? 3 : 2;
+    final int maxTextLines = Utils.isDesktop()
+        ? 3
+        : (Utils.isTablet() &&
+                MediaQuery.of(context).orientation == Orientation.landscape)
+            ? 3
+            : 2;
 
     return Expanded(
       child: Padding(
@@ -89,7 +85,7 @@ class BangumiContent extends StatelessWidget {
         // padding: const EdgeInsets.fromLTRB(14, 10, 4, 8),
         child: Text(
           bangumiItem.nameCn,
-          textAlign: TextAlign.start,
+          textAlign: TextAlign.center,
           style: const TextStyle(
             fontWeight: FontWeight.w500,
             letterSpacing: 0.3,
