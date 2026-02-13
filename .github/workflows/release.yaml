@@ -17,6 +17,10 @@
         name: "Release for android"
         runs-on: "ubuntu-latest" 
         permissions: write-all
+        env:
+          KEY_STORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         steps:
           - name: Clone repository
             uses: actions/checkout@v4
@@ -48,6 +52,8 @@
             run: |
               sed -i "s/kvpx7qkqjh/${{ secrets.DANDANAPI_APPID }}/g" lib/utils/mortis.dart
               sed -i "s/rABUaBLqdz7aCSi3fe88ZDj2gwga9Vax/${{ secrets.DANDANAPI_KEY }}/g" lib/utils/mortis.dart
+          - name: Decode keystore
+            run: echo "${{ secrets.SIGNING_KEY_BASE64 }}" | base64 -d > android/app/release-key.jks
           - name: Build Flutter for Android
             run: flutter build apk --split-per-abi
             shell: bash
@@ -421,17 +427,6 @@
             run: ls -l linux_outputs   
           - name: Copy linux build file to root
             run: cp linux_outputs/* .
-
-          - name: Sign APK
-            id: sign_app
-            uses: filippoLeporati93/android-release-signer@v1
-            with:
-              releaseDirectory: build/unsigned
-              signingKeyBase64: ${{ secrets.SIGNING_KEY_BASE64 }}
-              alias: ${{ secrets.KEY_ALIAS }}
-              keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-            env:
-              BUILD_TOOLS_VERSION: "34.0.0"
 
           - name: Copy Signed android build file
             run: cp ${{steps.sign_app.outputs.signedReleaseFile}} build/signed/Kazumi_android_${{ env.tag }}.apk
